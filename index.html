@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سوشال - Social App</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#0f172a;color:#fff}
+header{background:#1e293b;padding:14px;text-align:center;font-size:22px;font-weight:900;position:sticky;top:0}
+header span{color:#38bdf8}
+.wrap{max-width:520px;margin:auto;padding:12px}
+.card{background:#1e293b;border-radius:16px;padding:14px;margin-bottom:12px}
+input,textarea{width:100%;padding:12px;border-radius:12px;border:0;background:#0f172a;color:#fff;margin-bottom:8px;outline:none}
+button{background:#0284c7;color:#fff;border:0;padding:11px 16px;border-radius:12px;font-weight:800;cursor:pointer;width:100%}
+.post{background:#1e293b;border-radius:16px;padding:14px;margin-bottom:12px}
+.post b{font-size:17px}.post p{white-space:pre-wrap;line-height:1.6}
+.actions{display:flex;gap:8px}.actions button{background:#334155;width:auto;flex:1}
+.like.active{background:#db2777}
+small{color:#94a3b8}
+</style>
+</head>
+<body>
+<header>🌐 <span>سوشال</span> Social</header>
+<div class="wrap">
+<div class="card">
+<input id="name" placeholder="اسمك... مثلا: علي">
+<textarea id="text" rows="3" placeholder="اكتب منشورك هنا..."></textarea>
+<button onclick="post()">نشر 🚀</button>
+</div>
+<div id="feed"></div>
+<p style="text-align:center"><small>تطبيقك شغال - جرب تنشر منشور</small></p>
+</div>
+<script>
+let posts=JSON.parse(localStorage.getItem('posts')||'[]');
+function render(){
+let f=document.getElementById('feed');
+if(!posts.length){f.innerHTML='<div class="card" style="text-align:center">لا توجد منشورات بعد - كن أول من ينشر! 🎉</div>';return}
+f.innerHTML=posts.map((p,i)=>`<div class="post"><b>${p.name}</b> <small>• الآن</small><p>${p.text}</p><div class="actions"><button class="${p.liked?'like active':''}" onclick="like(${i})">❤️ ${p.likes}</button><button onclick="del(${i})">🗑️ حذف</button></div></div>`).join('');
+}
+function post(){
+let n=document.getElementById('name').value.trim()||'مستخدم';
+let t=document.getElementById('text').value.trim();
+if(!t){alert('اكتب شي أولا');return}
+posts.unshift({name:n,text:t,likes:0,liked:false});
+localStorage.setItem('posts',JSON.stringify(posts));
+document.getElementById('text').value='';render();
+}
+function like(i){posts[i].liked=!posts[i].liked;posts[i].likes+=posts[i].liked?1:-1;localStorage.setItem('posts',JSON.stringify(posts));render()}
+function del(i){if(confirm('تحذف المنشور؟')){posts.splice(i,1);localStorage.setItem('posts',JSON.stringify(posts));render()}}
+render();
+</script>
+</body>
+</html>
