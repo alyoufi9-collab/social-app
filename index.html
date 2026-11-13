@@ -1,53 +1,54 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سوشال - Social App</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#0f172a;color:#fff}
-header{background:#1e293b;padding:14px;text-align:center;font-size:22px;font-weight:900;position:sticky;top:0}
-header span{color:#38bdf8}
-.wrap{max-width:520px;margin:auto;padding:12px}
-.card{background:#1e293b;border-radius:16px;padding:14px;margin-bottom:12px}
-input,textarea{width:100%;padding:12px;border-radius:12px;border:0;background:#0f172a;color:#fff;margin-bottom:8px;outline:none}
-button{background:#0284c7;color:#fff;border:0;padding:11px 16px;border-radius:12px;font-weight:800;cursor:pointer;width:100%}
-.post{background:#1e293b;border-radius:16px;padding:14px;margin-bottom:12px}
-.post b{font-size:17px}.post p{white-space:pre-wrap;line-height:1.6}
-.actions{display:flex;gap:8px}.actions button{background:#334155;width:auto;flex:1}
-.like.active{background:#db2777}
-small{color:#94a3b8}
-</style>
-</head>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>سوشال حقيقي - Real</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<style>*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}body{background:#0f172a;color:#fff;padding-bottom:95px}header{background:#1e293b;padding:13px;text-align:center;position:sticky;top:0;z-index:20}.card{background:#1e293b;margin:10px;border-radius:16px;padding:13px}input,textarea{width:100%;background:#0f172a;border:1px solid #334155;color:#fff;padding:11px;border-radius:12px;margin-bottom:8px;outline:none}button{background:#0284c7;color:#fff;border:none;padding:11px;border-radius:12px;font-weight:bold;cursor:pointer;width:100%}.small{width:auto;padding:7px 13px;font-size:13px}.green{background:#16a34a}.red{background:#ef4444}.gray{background:#334155}.post{background:#0f172a;border-radius:12px;padding:11px;margin-top:10px}.post img{width:100%;border-radius:12px;margin-top:7px;max-height:320px;object-fit:cover}.actions{display:flex;gap:6px;margin-top:8px}.comment{background:#1e293b;padding:7px 10px;border-radius:10px;margin-top:5px;font-size:14px}nav{position:fixed;bottom:0;left:0;right:0;background:#1e293b;display:flex;padding:7px;gap:5px}nav button{background:#334155;font-size:13px}nav button.active{background:#0284c7}.page{display:none}.page.active{display:block}.friend{display:flex;align-items:center;gap:10px;background:#0f172a;padding:11px;border-radius:12px;margin-top:8px}.avatar{width:44px;height:44px;border-radius:50%;background:#0284c7;display:flex;align-items:center;justify-content:center;font-size:21px}.chatbox{height:260px;overflow-y:auto;background:#0f172a;border-radius:12px;padding:10px;margin-bottom:8px}.msg{background:#334155;padding:8px 12px;border-radius:14px;margin-bottom:7px;max-width:82%}.msg.me{background:#0284c7;margin-left:auto}.hidden{display:none}.flex{display:flex;gap:6px}video{width:100%;border-radius:12px;background:#000;margin-top:8px}.live{color:#22c55e;font-size:12px}</style></head>
 <body>
-<header>🌐 <span>سوشال</span> Social</header>
-<div class="wrap">
-<div class="card">
-<input id="name" placeholder="اسمك... مثلا: علي">
-<textarea id="text" rows="3" placeholder="اكتب منشورك هنا..."></textarea>
-<button onclick="post()">نشر 🚀</button>
-</div>
-<div id="feed"></div>
-<p style="text-align:center"><small>تطبيقك شغال - جرب تنشر منشور</small></p>
-</div>
+<header><h1>🌐 سوشال حقيقي <span style="color:#38bdf8">LIVE</span></h1><p class="live">● متصل بالسيرفر الحقيقي - أي شي تنشرو بيوصل لكل الناس طوالي</p><input id="nameInput" placeholder="اكتب اسمك الحقيقي هنا - مهم عشان الناس تعرفك" style="margin-top:8px"></header>
+
+<div id="page-home" class="page active">
+<div class="card"><textarea id="postInput" placeholder="بماذا تفكر؟..."></textarea><input type="file" id="imgInput" accept="image/*"><button onclick="addPost()">🚀 نشر للكل - حقيقي</button></div>
+<div class="card"><h3>📰 المنشورات - من كل الناس حول العالم</h3><div id="posts">جاري التحميل من السيرفر...</div></div></div>
+
+<div id="page-friends" class="page">
+<div class="card"><h3>👥 طلبات الصداقة - حقيقية</h3><p style="font-size:13px;color:#94a3b8">اكتب اسم صاحبك، وهو لما يفتح الموقع حيلقى طلبك</p><input id="friendName" placeholder="اسم صاحبك..."><button onclick="sendFriendReq()">➕ أرسل طلب صداقة حقيقي</button><div id="requests"></div></div>
+<div class="card"><h3>✅ أصدقائي</h3><div id="myFriends"></div></div></div>
+
+<div id="page-chat" class="page">
+<div class="card" id="friendsList"><h3>💬 ماسنجر حقيقي</h3><input id="chatTo" placeholder="اكتب اسم الشخص الداير تراسلو..."><button onclick="openChatByName()">فتح دردشة</button><div id="chatFriends"></div></div>
+<div class="card hidden" id="chatBoxCard"><button class="small gray" onclick="backToFriends()">⬅ رجوع</button><h3 style="margin:10px 0">💬 <span id="chatName"></span></h3><div class="flex"><button class="small green" onclick="startCall('voice')">🎙️ مكالمة صوتية</button><button class="small green" onclick="startCall('video')">📹 فيديو</button><button class="small red" onclick="endCall()">📵 إنهاء</button></div><video id="localVideo" autoplay muted playsinline class="hidden"></video><p id="callStatus" style="font-size:13px;color:#94a3b8;margin:6px 0"></p><div class="chatbox" id="chatbox"></div><input id="chatInput" placeholder="اكتب رسالة حقيقية..."><button onclick="sendMsg()">إرسال حقيقي ➤</button></div></div>
+
+<nav><button class="active" onclick="show('home',this)">🏠 الرئيسية</button><button onclick="show('friends',this)">👥 أصدقاء</button><button onclick="show('chat',this)">💬 ماسنجر</button></nav>
 <script>
-let posts=JSON.parse(localStorage.getItem('posts')||'[]');
-function render(){
-let f=document.getElementById('feed');
-if(!posts.length){f.innerHTML='<div class="card" style="text-align:center">لا توجد منشورات بعد - كن أول من ينشر! 🎉</div>';return}
-f.innerHTML=posts.map((p,i)=>`<div class="post"><b>${p.name}</b> <small>• الآن</small><p>${p.text}</p><div class="actions"><button class="${p.liked?'like active':''}" onclick="like(${i})">❤️ ${p.likes}</button><button onclick="del(${i})">🗑️ حذف</button></div></div>`).join('');
-}
-function post(){
-let n=document.getElementById('name').value.trim()||'مستخدم';
-let t=document.getElementById('text').value.trim();
-if(!t){alert('اكتب شي أولا');return}
-posts.unshift({name:n,text:t,likes:0,liked:false});
-localStorage.setItem('posts',JSON.stringify(posts));
-document.getElementById('text').value='';render();
-}
-function like(i){posts[i].liked=!posts[i].liked;posts[i].likes+=posts[i].liked?1:-1;localStorage.setItem('posts',JSON.stringify(posts));render()}
-function del(i){if(confirm('تحذف المنشور؟')){posts.splice(i,1);localStorage.setItem('posts',JSON.stringify(posts));render()}}
-render();
-</script>
-</body>
-</html>
+// ======== بدل هنا بالكود النسختو من Firebase ========
+const firebaseConfig = { PASTE_HERE };
+// =====================================================
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+let myName = localStorage.getItem('myName')||'';
+if(myName) document.getElementById('nameInput').value=myName;
+document.getElementById('nameInput').onchange=e=>{myName=e.target.value;localStorage.setItem('myName',myName);};
+function getName(){return document.getElementById('nameInput').value||myName||'زائر';}
+function show(p,btn){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+function addPost(){let name=getName();let text=document.getElementById('postInput').value;let f=document.getElementById('imgInput').files[0];if(!text&&!f)return alert('اكتب شي');let pushIt=(img)=>{db.ref('posts').push({name,text,img:img||'',likes:0,comments:[],time:Date.now()});document.getElementById('postInput').value='';document.getElementById('imgInput').value='';};if(f){let r=new FileReader();r.onload=e=>pushIt(e.target.result);r.readAsDataURL(f);}else pushIt('');}
+// سماع المنشورات لحظة بلحظة من السيرفر
+db.ref('posts').on('value',snap=>{let data=snap.val()||{};let list=Object.entries(data).reverse();document.getElementById('posts').innerHTML=list.length?'':'<p>لسه ما في منشورات - كن أول واحد!</p>';list.forEach(([id,p])=>{document.getElementById('posts').innerHTML+=`<div class="post"><b>👤 ${p.name}</b><p style="margin:7px 0">${p.text}</p>${p.img?`<img src="${p.img}">`:''}<div class="actions"><button class="small" onclick="likePost('${id}',${p.likes||0})">❤️ ${p.likes||0} لايك</button><button class="small gray" onclick="delPost('${id}')">🗑 حذف</button></div>${(p.comments||[]).map(c=>`<div class="comment">💬 ${c}</div>`).join('')}<div style="display:flex;gap:5px;margin-top:7px"><input id="c-${id}" placeholder="تعليق..."><button class="small" onclick="addComment('${id}')">تعليق</button></div></div>`;});});
+function likePost(id,likes){db.ref('posts/'+id+'/likes').set(likes+1);}
+function delPost(id){db.ref('posts/'+id).remove();}
+function addComment(id){let v=document.getElementById('c-'+id).value;if(!v)return;db.ref('posts/'+id+'/comments').once('value',s=>{let arr=s.val()||[];arr.push(v);db.ref('posts/'+id+'/comments').set(arr);});}
+// طلبات صداقة حقيقية
+function sendFriendReq(){let to=document.getElementById('friendName').value;if(!to)return alert('اكتب اسم صاحبك');db.ref('friendRequests').push({from:getName(),to:to,status:'pending',time:Date.now()});alert('✅ تم إرسال طلب حقيقي لـ '+to+' - لما يفتح الموقع حيلقاهو');}
+db.ref('friendRequests').on('value',snap=>{let data=Object.entries(snap.val()||{});let mine=data.filter(([id,r])=>r.to==getName());document.getElementById('requests').innerHTML=mine.length?'':'<p>لا توجد طلبات ليك لسه</p>';mine.forEach(([id,r])=>{if(r.status=='pending')document.getElementById('requests').innerHTML+=`<div class="friend"><div class="avatar">👤</div><div style="flex:1"><b>${r.from}</b><div style="font-size:12px">أرسل ليك طلب صداقة</div></div><button class="small green" onclick="respondReq('${id}','accepted')">✅ قبول</button><button class="small red" onclick="respondReq('${id}','rejected')">❌ رفض</button></div>`;else document.getElementById('requests').innerHTML+=`<div class="friend"><b>${r.from} - ${r.status=='accepted'?'✅ تم القبول':'❌ تم الرفض'}</b></div>`;});
+let fr=data.filter(([id,r])=>r.status=='accepted'&&(r.from==getName()||r.to==getName()));document.getElementById('myFriends').innerHTML=fr.length?fr.map(([id,r])=>`<div class="friend"><div class="avatar">👤</div><b>${r.from==getName()?r.to:r.from} • 🟢</b><button class="small" onclick="openChat('${r.from==getName()?r.to:r.from}')">💬 دردشة</button></div>`).join(''):'<p>لسه ما عندك أصدقاء مقبولين</p>';
+document.getElementById('chatFriends').innerHTML=fr.length?fr.map(([id,r])=>{let n=r.from==getName()?r.to:r.from;return `<div class="friend" onclick="openChat('${n}')"><div class="avatar">👤</div><b>${n}</b></div>`}).join(''):'<p>أضف أصدقاء من صفحة الأصدقاء أولاً</p>';});
+function respondReq(id,st){db.ref('friendRequests/'+id+'/status').set(st);}
+// دردشة حقيقية
+let currentFriend='';let chatRef=null;
+function openChatByName(){let n=document.getElementById('chatTo').value;if(!n)return alert('اكتب اسم الشخص');openChat(n);}
+function openChat(n){currentFriend=n;document.getElementById('friendsList').classList.add('hidden');document.getElementById('chatBoxCard').classList.remove('hidden');document.getElementById('chatName').innerText=n;let room=[getName(),n].sort().join('_');if(chatRef)chatRef.off();chatRef=db.ref('chats/'+room);chatRef.on('value',snap=>{let arr=Object.values(snap.val()||{});document.getElementById('chatbox').innerHTML=arr.map(m=>`<div class="msg ${m.from==getName()?'me':''}"><b style="font-size:11px">${m.from}:</b> ${m.text}</div>`).join('')||'<p>ابدأ المحادثة...</p>';});}
+function backToFriends(){document.getElementById('friendsList').classList.remove('hidden');document.getElementById('chatBoxCard').classList.add('hidden');endCall();}
+function sendMsg(){let v=document.getElementById('chatInput').value;if(!v)return;let room=[getName(),currentFriend].sort().join('_');db.ref('chats/'+room).push({from:getName(),to:currentFriend,text:v,time:Date.now()});document.getElementById('chatInput').value='';}
+// مكالمات
+let stream=null;async function startCall(type){document.getElementById('callStatus').innerText='📞 جاري الاتصال بـ '+currentFriend+'...';try{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:type=='video'});let v=document.getElementById('localVideo');if(type=='video'){v.classList.remove('hidden');v.srcObject=stream;}document.getElementById('callStatus').innerText=(type=='video'?'📹 فيديو جاري':'🎙️ صوتي جاري')+' مع '+currentFriend+' - الطرف التاني لازم يفتح نفس الصفحة ويضغط نفس الزر';}catch(e){document.getElementById('callStatus').innerText='⚠️ اضغط Allow / سماح للكاميرا والمايك';}}
+function endCall(){if(stream)stream.getTracks().forEach(t=>t.stop());document.getElementById('localVideo').classList.add('hidden');document.getElementById('callStatus').innerText='📵 تم إنهاء المكالمة';}
+</script></body></html>
