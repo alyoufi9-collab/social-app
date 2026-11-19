@@ -1,118 +1,143 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NoorBook V2 - نور بوك</title>
+<title>NoorBook - نور بوك</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef2f7;--card:#fff;--text:#111;--muted:#65676b;--blue:#1877f2;--green:#16a34a;--border:#e4e6eb}
+:root{--bg:#eef2f7;--card:#fff;--text:#111;--muted:#65676b;--blue:#1877f2;--border:#e4e6eb}
 body.dark{--bg:#18191a;--card:#242526;--text:#e4e6eb;--muted:#b0b3b8;--border:#3a3b3c}
-body{background:var(--bg);color:var(--text);font-family:system-ui,Tahoma,sans-serif;padding-bottom:90px;transition:.3s}
-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-body.dark header{background:rgba(36,37,38,.85)}
-.logo{font-weight:900;font-size:26px;color:var(--blue)}
-.logo span{color:#f59e0b}
+body{background:var(--bg);color:var(--text);font-family:system-ui,Tahoma,sans-serif;padding-bottom:90px}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+body.dark header{background:rgba(36,37,38,.9)}
+.logo{font-weight:900;font-size:26px;color:var(--blue)} .logo span{color:#f59e0b}
 .wrap{max-width:520px;margin:auto;padding:12px}
 .card{background:var(--card);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border)}
 button{border:0;border-radius:999px;padding:9px 14px;font-weight:700;cursor:pointer;font-family:inherit}
-.btn-blue{background:var(--blue);color:#fff}.btn-green{background:var(--green);color:#fff}.btn-gray{background:var(--border);color:var(--text)}
+.btn-blue{background:var(--blue);color:#fff}.btn-gray{background:var(--border);color:var(--text)}
 input{border:1px solid var(--border);border-radius:999px;padding:10px 12px;width:100%;background:var(--card);color:var(--text);outline:none}
-.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#a855f7);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0}
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#a855f7);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0}
 .post-img{width:100%;border-radius:14px;margin-top:10px;max-height:320px;object-fit:cover}
-.actions{display:flex;gap:6px;margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
-.actions button{flex:1;background:transparent;color:var(--muted);font-size:14px}
-.actions button:hover{background:var(--border)}
-.badge{font-size:10px;background:#eef2f7;color:#65676b;padding:3px 8px;border-radius:999px}
-body.dark .badge{background:#3a3b3c;color:#b0b3b8}
 .tabs{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 14px;z-index:50}
 .tabs button{background:transparent;color:var(--muted);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px}
-.tabs button.active{color:var(--blue)}
-.tabs button span{font-size:22px}
-.story-row{display:flex;gap:10px;overflow:auto;padding-bottom:4px}
-.story{min-width:90px;height:150px;border-radius:16px;background:linear-gradient(180deg,#1877f2,#a855f7);color:#fff;padding:8px;display:flex;flex-direction:column;justify-content:space-between;font-size:12px;font-weight:700}
-.story.me{background:#e4e6eb;color:#111}
-body.dark .story.me{background:#3a3b3c;color:#fff}
-.sponsored{border:2px solid #dbeafe}
-.ad-cta{width:100%;margin-top:10px}
-input[type=range]{accent-color:var(--blue)}
+.tabs button.active{color:var(--blue)} .tabs button span{font-size:22px}
 .hidden{display:none}
-.chat-msg{padding:8px 12px;border-radius:16px;max-width:80%;font-size:14px;margin-bottom:6px}
-.chat-me{background:var(--blue);color:#fff;margin-left:auto}
-.chat-other{background:var(--border);margin-right:auto}
+/* القائمة الجانبية - زي فيسبوك بالضبط */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:86%;max-width:380px;background:var(--card);z-index:100;overflow:auto;padding:14px;box-shadow:-4px 0 20px rgba(0,0,0,.2);transform:translateX(105%);transition:.3s}
+.drawer.open{transform:translateX(0)}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;display:none}
+.drawer-overlay.show{display:block}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.menu-item{background:var(--bg);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;font-size:13px;font-weight:700}
+.menu-item small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:2px}
+.menu-row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid var(--border);cursor:pointer;font-weight:700}
+.menu-app{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:14px;padding:12px;margin-bottom:8px;font-weight:700}
+.badge{font-size:10px;background:#eef2f7;padding:3px 8px;border-radius:999px}
 </style></head>
 <body>
-
 <header><div class="logo">Noor<span>Book</span> 💙</div>
-<div style="display:flex;gap:6px"><button class="btn-gray" onclick="toggleDark()">🌙 / ☀️</button><button class="btn-blue" onclick="showTab('chat')">💬</button></div></header>
+<div style="display:flex;gap:6px"><button class="btn-gray" onclick="openDrawer()">☰ القائمة</button><button class="btn-gray" onclick="toggleDark()">🌙</button></div></header>
+
+<!-- القائمة الجانبية - نفس قائمة فيسبوك لكن بأسماء نور -->
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <!-- بروفايل -->
+  <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+    <div class="avatar" style="width:52px;height:52px;font-size:20px">ي</div>
+    <div><b style="font-size:17px">يوسف ابراهيم</b><p style="font-size:12px;color:var(--muted)">9+ إشعارات • <span onclick="showTab('profile');closeDrawer()" style="color:var(--blue);cursor:pointer">عرض بروفايلك</span></p></div>
+    <span style="margin-right:auto">‹</span>
+  </div>
+  <div style="display:flex;gap:6px;margin:10px 0"><button class="btn-blue" style="flex:1" onclick="showTab('feed');closeDrawer()">➕ إنشاء صفحة على نور بوك</button></div>
+
+  <!-- القائمة الرئيسية -->
+  <div class="menu-grid">
+    <div class="menu-item" onclick="showTab('memories');closeDrawer()">🕑<br>الذكريات<small>ذكريات نور</small></div>
+    <div class="menu-item" onclick="showTab('saved');closeDrawer()">🔖<br>العناصر المحفوظة<small>محفوظات نور</small></div>
+    <div class="menu-item" onclick="showTab('friends');closeDrawer()">👥<br>الأصدقاء<small>7 متصلون</small></div>
+    <div class="menu-item" onclick="showTab('groups');closeDrawer()">👨‍👩‍👧‍👦<br>المجموعات<small>مجموعات نور</small></div>
+    <div class="menu-item" onclick="showTab('reels');closeDrawer()">🎬<br>ريلز<small>نور ريلز</small></div>
+    <div class="menu-item" onclick="showTab('feed');closeDrawer()">📰<br>الأخبار<small>أخبار نور</small></div>
+    <div class="menu-item" onclick="showTab('events');closeDrawer()">⭐<br>المناسبات<small>مناسبات نور</small></div>
+    <div class="menu-item" onclick="showTab('games');closeDrawer()">🎮<br>الألعاب<small>ألعاب نور</small></div>
+    <div class="menu-item" onclick="showTab('market');closeDrawer()">🛒<br>نور ماركت<small>بيع واشتري</small></div>
+    <div class="menu-item" onclick="showTab('ads');closeDrawer()">🎁<br>نور Free Boost<small>إعلان مجاني</small></div>
+  </div>
+  <button class="btn-gray" style="width:100%" onclick="alert('عرض المزيد - كل أقسام نور')">عرض المزيد</button>
+
+  <!-- المساعدة والإعدادات -->
+  <div class="menu-row" onclick="toggleSub('help')">❓ المساعدة والدعم <span>∨</span></div>
+  <div id="sub-help" class="hidden" style="padding:8px;font-size:13px;color:var(--muted)">• مركز مساعدة نور<br>• الإبلاغ عن مشكلة<br>• شروط نور وسياسة الخصوصية</div>
+  <div class="menu-row" onclick="toggleSub('settings')">⚙️ الإعدادات والخصوصية <span>∨</span></div>
+  <div id="sub-settings" class="hidden" style="padding:8px;font-size:13px">
+    <div onclick="showTab('settings');closeDrawer()" style="padding:6px;cursor:pointer">⚙️ إعدادات نور</div>
+    <div onclick="toggleDark()" style="padding:6px;cursor:pointer">🌙 الوضع الداكن / الفاتح</div>
+    <div onclick="alert('اللغة: العربية 🇸🇩')" style="padding:6px;cursor:pointer">🌐 اللغة: العربية</div>
+  </div>
+  <div class="menu-row" onclick="toggleSub('pro')">✨ الترقيات <span>∨</span></div>
+  <div id="sub-pro" class="hidden" style="padding:8px">
+    <div style="background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;border-radius:14px;padding:14px"><b>حضور نور العام - Noor Pro</b><p style="font-size:12px;margin-top:4px">احصل على أدوات تساعدك على النمو...</p><button style="background:#fff;color:#a855f7;margin-top:8px" onclick="showTab('profile');closeDrawer()">افتح لوحة حضور نور</button></div>
+  </div>
+
+  <!-- أيضا من نور - بدل أيضا من Meta -->
+  <div class="menu-row" onclick="toggleSub('apps')">▦ أيضا من نور <span>∨</span></div>
+  <div id="sub-apps">
+    <div class="menu-app" onclick="alert('نور مونتاج - تعديل فيديو')">🎬 نور مونتاج <span>↗</span></div>
+    <div class="menu-app" onclick="showTab('threads');closeDrawer()">🧵 نور خيوط - NoorThreads <span>↗</span></div>
+    <div class="menu-app" onclick="showTab('gram');closeDrawer()">📸 نور جرام - NoorGram <span>↗</span></div>
+    <div class="menu-app" onclick="showTab('free');closeDrawer()">⚡ نور مجاني - NoorFree <span>↗</span></div>
+    <div class="menu-app" onclick="showTab('chat');closeDrawer()">💬 نور شات - NoorChat <span>↗</span></div>
+    <div class="menu-app" onclick="showTab('talk');closeDrawer()">💚 نور توك - NoorTalk <span>↗</span></div>
+  </div>
+  <button style="width:100%;background:#e4e6eb;color:#111;margin-top:10px" onclick="alert('تم تسجيل الخروج من نور بوك')">تسجيل الخروج</button>
+  <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px">© 2026 شركة نور Noor Tech</p>
+</div>
 
 <div class="wrap">
+  <!-- ستوريز -->
+  <div class="card"><div style="display:flex;gap:10px;overflow:auto"><div style="min-width:90px;height:150px;border-radius:16px;background:#e4e6eb;padding:8px;font-weight:700">➕<br><br>أضف ستوري<br>أنت</div><div style="min-width:90px;height:150px;border-radius:16px;background:linear-gradient(180deg,#f59e0b,#ef4444);color:#fff;padding:8px;font-weight:700">🔴<br><br>أحمد<br>منذ ساعة</div><div style="min-width:90px;height:150px;border-radius:16px;background:linear-gradient(180deg,#1877f2,#a855f7);color:#fff;padding:8px;font-weight:700">🔴<br><br>سارة<br>الآن</div></div></div>
+  <!-- انشر -->
+  <div class="card" style="display:flex;gap:10px;align-items:center"><div class="avatar">ي</div><input placeholder="شنو الجديد يا يوسف؟"><button class="btn-blue">📷</button></div>
+  <!-- 🎛️ تحكم -->
+  <div class="card"><b>🎛️ تحكم في خوارزميتك - أنت المدير</b><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;font-size:12px;margin-top:10px"><div>👥 أصدقاء<br><b id="v-f">50%</b><input id="c-f" type="range" min="0" max="100" value="50" oninput="loadFeed()"></div><div>📰 أخبار<br><b id="v-n">50%</b><input id="c-n" type="range" min="0" max="100" value="50" oninput="loadFeed()"></div><div>😂 ترفيه<br><b id="v-e">50%</b><input id="c-e" type="range" min="0" max="100" value="50" oninput="loadFeed()"></div></div></div>
+  <!-- Free Boost -->
+  <div class="card" style="background:linear-gradient(135deg,#16a34a,#059669);color:#fff"><b>🎁 إعلان مجاني - Noor Free Boost</b><p style="font-size:12px">100 نقطة = 1000 مشاهدة</p><div style="display:flex;gap:6px;margin-top:8px"><input id="freeTitle" placeholder="اسم مشروعك..."><button onclick="boostFree()" style="background:#fff;color:#16a34a;white-space:nowrap">روّج مجانا 🚀</button></div></div>
+  <!-- أصدقاء -->
+  <div class="card"><b>👥 ناس ممكن تعرفهم - NoorGraph</b><div id="suggest"></div></div>
 
-<!-- ستوريز -->
-<div class="card"><div class="story-row">
-<div class="story me">➕<span>أضف ستوري<br>أنت</span></div>
-<div class="story">🔴<span>سارة<br>الآن</span></div>
-<div class="story" style="background:linear-gradient(180deg,#f59e0b,#ef4444)">🔴<span>أحمد<br>منذ ساعة</span></div>
-<div class="story" style="background:linear-gradient(180deg,#10b981,#06b6d4)">🔴<span>نور<br>منذ 2 ساعة</span></div>
-</div></div>
-
-<!-- انشر -->
-<div class="card" style="display:flex;gap:10px;align-items:center"><div class="avatar">ن</div><input placeholder="شنو الجديد يا نور؟ شاركنا..." onclick="alert('اكتب منشورك - حيتخزن في السيرفر')"><button class="btn-blue">📷</button></div>
-
-<!-- 🎛️ شريط تحكم الخوارزمية -->
-<div class="card"><b>🎛️ تحكم في خوارزميتك - أنت المدير</b>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;font-size:12px;margin-top:10px">
-<div>👥 أصدقاء<br><b id="v-f">50%</b><input id="c-f" type="range" min="0" max="100" value="50" oninput="loadFeed()"></div>
-<div>📰 أخبار<br><b id="v-n">50%</b><input id="c-n" type="range" min="0" max="100" value="50" oninput="loadFeed()"></div>
-<div>😂 ترفيه<br><b id="v-e">50%</b><input id="c-e" type="range" min="0" max="100" value="50" oninput="loadFeed()"></div>
-</div></div>
-
-<!-- 🎁 Free Boost -->
-<div class="card" style="background:linear-gradient(135deg,#16a34a,#059669);color:#fff"><b>🎁 إعلان مجاني - Noor Free Boost</b>
-<p style="font-size:12px;opacity:.9;margin:4px 0">100 نقطة = 1000 مشاهدة • للمشاريع الناشئة والمبادرات الخيرية</p>
-<div style="display:flex;gap:6px"><input id="freeTitle" placeholder="اسم مشروعك / مبادرتك..."><button onclick="boostFree()" style="background:#fff;color:#16a34a;white-space:nowrap">روّج مجانا 🚀</button></div></div>
-
-<!-- 👥 اقتراحات -->
-<div class="card"><b>👥 ناس ممكن تعرفهم</b><div id="suggest" style="margin-top:8px"></div></div>
-
-<!-- الخلاصة -->
-<div id="tab-feed"><div id="feed"><p style="text-align:center;padding:20px">جاري تحميل الخلاصة...</p></div></div>
-
-<!-- الريلز -->
-<div id="tab-reels" class="hidden"><div class="card" style="text-align:center"><b>🎬 Noor Reels</b><p style="font-size:12px;color:var(--muted)">فيديوهات قصيرة - البتكملو للنهاية بينتشر</p>
-<div id="reels" style="margin-top:10px"></div></div></div>
-
-<!-- الماسنجر -->
-<div id="tab-chat" class="hidden"><div class="card"><b>💬 نور ماسنجر - MQTT سريع</b>
-<p style="font-size:12px;color:var(--green)">● متصل الآن • Delta Sync شغال • ما بيصرف بطارية</p>
-<div style="display:flex;gap:6px;margin:10px 0"><input id="chatTo" type="number" value="2" placeholder="ID صديقك" style="max-width:90px"><input id="chatMsg" placeholder="اكتب رسالة..."><button class="btn-green" onclick="sendChat()">إرسال</button></div>
-<div id="chatBox"></div></div>
-<!-- إعلان مصغر في الشات -->
-<div class="card" style="display:flex;gap:10px;align-items:center;background:#eff6ff"><div class="avatar" style="width:40px;height:40px;font-size:14px">🍔</div><div style="flex:1"><b style="font-size:13px">مطعم النور - بورتسودان</b><p style="font-size:11px;color:var(--muted)">خصم 20% • إعلان</p></div><button class="btn-blue" style="font-size:12px" onclick="clickToMessenger(99)">مراسلة</button></div>
+  <!-- التبويبات -->
+  <div id="tab-feed"><div id="feed"></div></div>
+  <div id="tab-reels" class="hidden"><div class="card"><b>🎬 نور ريلز</b><div id="reels"></div></div></div>
+  <div id="tab-chat" class="hidden"><div class="card"><b>💬 نور شات - NoorChat</b><p style="font-size:12px;color:#16a34a">● متصل الآن • Delta Sync • MQTT</p><div style="display:flex;gap:6px;margin:10px 0"><input id="chatTo" type="number" value="2" style="max-width:80px"><input id="chatMsg" placeholder="اكتب..."><button class="btn-blue" onclick="sendChat()">إرسال</button></div><div id="chatBox"></div></div></div>
+  <div id="tab-market" class="hidden"><div class="card"><b>🛒 نور ماركت</b><div id="marketGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"></div></div></div>
+  <div id="tab-memories" class="hidden"><div class="card"><b>🕑 ذكريات نور</b><p>قبل سنة في نفس اليوم: نشرت صورة في بورتسودان 🌊</p></div></div>
+  <div id="tab-saved" class="hidden"><div class="card"><b>🔖 محفوظات نور</b><p>منشوراتك المحفوظة حتظهر هنا</p></div></div>
+  <div id="tab-friends" class="hidden"><div class="card"><b>👥 أصدقاء نور</b><div id="friendsList"></div></div></div>
+  <div id="tab-groups" class="hidden"><div class="card"><b>👨‍👩‍👧‍👦 مجموعات نور</b><p>• سودانيين في بورتسودان - 12K عضو<br>• مطبخ سوداني - 8K عضو<br>• كورة سودانية - 20K عضو</p></div></div>
+  <div id="tab-events" class="hidden"><div class="card"><b>⭐ مناسبات نور</b><p>🎉 حفل افتتاح سوق بورتسودان - الجمعة<br>⚽ مباراة الهلال والمريخ - السبت</p></div></div>
+  <div id="tab-games" class="hidden"><div class="card"><b>🎮 ألعاب نور</b><p>🎲 لودو • ♟️ شطرنج • 🃏 كوتشينة - العب مع أصدقاءك</p></div></div>
+  <div id="tab-settings" class="hidden"><div class="card"><b>⚙️ إعدادات نور</b><input value="يوسف ابراهيم" style="margin:8px 0"><input value="بورتسودان • السودان" style="margin-bottom:8px"><button class="btn-blue" style="width:100%" onclick="alert('تم الحفظ ✅')">حفظ</button><p style="margin-top:10px;font-size:13px">🔒 الخصوصية: الأصدقاء فقط • 🌙 الوضع الداكن • 🌐 اللغة: العربية</p></div></div>
+  <div id="tab-threads" class="hidden"><div class="card"><b>🧵 نور خيوط - NoorThreads</b><p>منشورات قصيرة وسريعة زي تويتر، لكن بنكهة نور</p></div></div>
+  <div id="tab-gram" class="hidden"><div class="card"><b>📸 نور جرام - NoorGram</b><p>صور وستوريز - نفس فكرة انستقرام لكن داخل نور</p></div></div>
+  <div id="tab-talk" class="hidden"><div class="card"><b>💚 نور توك - NoorTalk</b><p>رسائل سريعة ومشفرة - زي واتساب لكن تابع لنور</p></div></div>
+  <div id="tab-free" class="hidden"><div class="card"><b>⚡ نور مجاني - NoorFree</b><p>نسخة خفيفة بتشتغل بنت ضعيف - بدون صور تقيلة</p></div></div>
+  <div id="tab-profile" class="hidden"><div class="card" style="text-align:center"><div class="avatar" style="width:80px;height:80px;font-size:32px;margin:auto">ي</div><h2>يوسف ابراهيم</h2><p style="color:var(--muted)">بورتسودان • 1.2K صديق</p><p style="margin-top:8px">⭐ نقاطك: 120 • 🔥 حضور نور: نشط</p></div></div>
+  <div id="tab-ads" class="hidden"><div class="card"><b>🎁 نور Free Boost</b><p>روّج مشروعك مجانا بالنقاط</p></div></div>
 </div>
 
-<!-- البروفايل -->
-<div id="tab-profile" class="hidden"><div class="card" style="text-align:center"><div class="avatar" style="width:80px;height:80px;font-size:32px;margin:auto">ن</div><h2 style="margin-top:8px">نور الدين</h2><p style="color:var(--muted);font-size:13px">بورتسودان • السودان • 1.2K صديق</p><div style="display:flex;gap:6px;margin-top:10px"><button class="btn-blue" style="flex:1">تعديل البروفايل</button><button class="btn-gray" style="flex:1">مشاركة</button></div></div>
-<div class="card"><b>📊 إحصائياتك</b><p style="font-size:13px;margin-top:6px">⭐ نقاطك: 120 نقطة<br>👁️ مشاهدات منشوراتك: 4,320<br>🔥 أفضل منشور: فيديو مضحك - 1024 لايك</p></div></div>
-
-</div>
-
-<!-- شريط سفلي -->
 <div class="tabs">
 <button id="btn-feed" class="active" onclick="showTab('feed')"><span>🏠</span>الرئيسية</button>
-<button id="btn-reels" onclick="showTab('reels')"><span>🎬</span>ريلز</button>
-<button onclick="alert('انشر منشور جديد')"><span style="background:var(--blue);color:#fff;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-18px;font-size:24px">+</span></button>
-<button id="btn-chat" onclick="showTab('chat')"><span>💬</span>ماسنجر</button>
-<button id="btn-profile" onclick="showTab('profile')"><span>👤</span>حسابي</button>
+<button onclick="showTab('reels')"><span>🎬</span>ريلز</button>
+<button onclick="alert('انشر')"><span style="background:var(--blue);color:#fff;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-18px;font-size:24px">+</span></button>
+<button onclick="showTab('chat')"><span>💬</span>نور شات</button>
+<button onclick="openDrawer()"><span>☰</span>القائمة</button>
 </div>
 
 <script>
 const API = location.hostname==="localhost" ? "http://localhost:8000" : "https://YOUR-RENDER-URL.onrender.com";
-const MY_ID = 1;
-let lastSync = 0;
-function toggleDark(){ document.body.classList.toggle('dark'); }
-function showTab(t){
-  ["feed","reels","chat","profile"].forEach(x=>document.getElementById('tab-'+x).classList.toggle('hidden',x!==t));
-  ["feed","reels","chat","profile"].forEach(x=>document.getElementById('btn-'+x)?.classList.toggle('active',x===t));
-  if(t==="reels") loadReels(); if(t==="chat") deltaSync();
-}
-function noorPixel(adId,ev){ fetch(API+"/ads/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ad_id:adId,user_id:MY_ID,event:ev})}); }
+const MY_ID=1; let lastSync=0;
+function toggleDark(){document.body.classList.toggle('dark')}
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+function toggleSub(id){document.getElementById('sub-'+id)?.classList.toggle('hidden')}
+function showTab(t){["feed","reels","chat","market","memories","saved","friends","groups","events","games","settings","threads","gram","talk","free","profile","ads"].forEach(x=>document.getElementById('tab-'+x)?.classList.toggle('hidden',x!==t)); if(t==="reels")loadReels(); if(t==="chat")deltaSync(); if(t==="market")renderMarket(); if(t==="friends")loadSuggest();}
+function noorPixel(a,e){fetch(API+"/ads/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ad_id:a,user_id:MY_ID,event:e})})}
 async function loadFeed(){
   const controls={friends:+document.getElementById('c-f').value,news:+document.getElementById('c-n').value,entertainment:+document.getElementById('c-e').value};
   document.getElementById('v-f').innerText=controls.friends+"%"; document.getElementById('v-n').innerText=controls.news+"%"; document.getElementById('v-e').innerText=controls.entertainment+"%";
@@ -120,24 +145,19 @@ async function loadFeed(){
     const posts=await (await fetch(API+"/feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID,controls})})).json();
     const ads=await (await fetch(API+"/ads/auction",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID,age:24,city_hash:"portsudan",interests:{}})})).json();
     const ad=ads[0]; let h="";
-    posts.forEach((p,i)=>{
-      h+=`<div class="card"><div style="display:flex;gap:10px"><div class="avatar">${p.avatar}</div><div><b>${p.author}</b><p style="font-size:11px;color:var(--muted)">Score ${p.score} • ${p.category} • منذ ساعة</p></div><span class="badge" style="margin-right:auto">•••</span></div><p style="margin-top:10px;line-height:1.6">${p.content}</p>${p.image?`<img src="${p.image}" class="post-img">`:""}<div class="actions"><button onclick="like(this)">❤️ ${p.likes} أعجبني</button><button>💬 ${p.comments} تعليق</button><button>↗️ ${p.shares} مشاركة</button></div></div>`;
-      if((i+1)%3===0 && ad){
-        h+=`<div class="card sponsored"><div style="display:flex;justify-content:space-between"><b>${ad.title}</b><span class="badge">مُموَّل • Sponsored</span></div><p style="font-size:12px;color:var(--muted);margin-top:4px">إعلان مناسب ليك • لماذا أرى هذا؟</p><div style="display:flex;gap:6px;margin-top:10px"><button class="btn-blue ad-cta" style="flex:1" onclick="noorPixel(${ad.id},'click')">${ad.cta||"تسوق الآن"}</button><button class="btn-green ad-cta" style="flex:1" onclick="clickToMessenger(${ad.advertiser_id})">💬 راسلنا</button></div></div>`;
-        noorPixel(ad.id,'impression');
-      }
-    });
+    posts.forEach((p,i)=>{ h+=`<div class="card"><div style="display:flex;gap:10px"><div class="avatar">${p.avatar}</div><div><b>${p.author}</b><p style="font-size:11px;color:var(--muted)">NoorRank Score ${p.score} • ${p.category}</p></div></div><p style="margin-top:10px">${p.content}</p>${p.image?`<img src="${p.image}" class="post-img">`:""}<div style="display:flex;gap:6px;margin-top:10px;border-top:1px solid var(--border);padding-top:10px"><button style="flex:1;background:transparent;color:var(--muted)">❤️ ${p.likes}</button><button style="flex:1;background:transparent;color:var(--muted)">💬 ${p.comments}</button><button style="flex:1;background:transparent;color:var(--muted)">↗️ ${p.shares}</button></div></div>`;
+    if((i+1)%3===0 && ad){ h+=`<div class="card" style="border:2px solid #dbeafe"><b>${ad.title}</b> <span class="badge">مُموَّل • Sponsored • NoorAds</span><div style="display:flex;gap:6px;margin-top:10px"><button class="btn-blue" style="flex:1" onclick="noorPixel(${ad.id},'click')">${ad.cta||"تسوق الآن"}</button><button style="flex:1;background:#16a34a;color:#fff" onclick="clickToMessenger(${ad.advertiser_id})">💬 راسلنا في نور شات</button></div></div>`; noorPixel(ad.id,'impression'); }});
     document.getElementById('feed').innerHTML=h;
-  }catch(e){ document.getElementById('feed').innerHTML="<p style='text-align:center'>شغل السيرفر أولا: uvicorn app:app --reload</p>"; }
+  }catch(e){document.getElementById('feed').innerHTML="<p style='text-align:center'>شغل السيرفر: uvicorn app:app --reload</p>"}
 }
-function like(btn){ let n=parseInt(btn.innerText.match(/\d+/)[0])+1; btn.innerText="❤️ "+n+" أعجبني"; btn.style.color="#1877f2"; }
-async function loadSuggest(){ try{ const l=await (await fetch(API+"/suggest/"+MY_ID)).json(); document.getElementById('suggest').innerHTML=l.map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><div><b style="font-size:14px">${u.name}</b><p style="font-size:11px;color:var(--muted)">${u.why}</p></div><button class="btn-blue" style="font-size:12px;padding:6px 12px" onclick="this.innerText='تم الإرسال ✓'">إضافة</button></div>`).join(''); }catch(e){} }
-async function boostFree(){ const t=document.getElementById('freeTitle').value; if(!t) return alert("اكتب اسم مشروعك أولا"); const r=await (await fetch(API+"/ads/free",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID,title:t})})).json(); alert(r.msg); }
-async function loadReels(){ try{ const reels=await (await fetch(API+"/reels/feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID})})).json(); document.getElementById('reels').innerHTML=reels.length?reels.map(v=>`<div style="background:#000;color:#fff;border-radius:14px;padding:30px 10px;margin-bottom:8px">🎬 ريلز #${v.id} • 🔥 ${v.viral_score} • 👁️ ${v.views}</div>`).join(''):"<p style='padding:20px'>لسه مافي ريلز - كن أول واحد يرفع! 🚀<br><span style='font-size:12px'>الريلز الحقيقي بيشتغل بـ HLS لما ترفع فيديو من السيرفر</span></p>"; }catch(e){} }
+async function loadSuggest(){ try{ const l=await (await fetch(API+"/suggest/"+MY_ID)).json(); document.getElementById('suggest').innerHTML=l.map(u=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><div><b style="font-size:14px">${u.name}</b><p style="font-size:11px;color:var(--muted)">${u.why}</p></div><button class="btn-blue" style="font-size:12px" onclick="this.innerText='تم ✓'">إضافة</button></div>`).join(''); document.getElementById('friendsList').innerHTML=document.getElementById('suggest').innerHTML; }catch(e){} }
+async function boostFree(){ const t=document.getElementById('freeTitle').value; if(!t) return alert("اكتب اسم مشروعك"); const r=await (await fetch(API+"/ads/free",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID,title:t})})).json(); alert(r.msg); }
+async function loadReels(){ try{ const reels=await (await fetch(API+"/reels/feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID})})).json(); document.getElementById('reels').innerHTML=reels.length?reels.map(v=>`<div style="background:#000;color:#fff;border-radius:14px;padding:30px 10px;margin:8px 0">🎬 ريلز #${v.id} • 🔥 ${v.viral_score}</div>`).join(''):"<p>لسه مافي ريلز - كن أول واحد!</p>"; }catch(e){} }
 async function deltaSync(){ try{ const r=await (await fetch(API+"/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID,last_sync_ts:lastSync})})).json(); r.deltas.forEach(showMsg); lastSync=r.new_sync_ts; }catch(e){} }
-function showMsg(m){ const b=document.getElementById('chatBox'); if(document.getElementById(m.id)) return; b.innerHTML+=`<div id="${m.id}" class="chat-msg ${m.from==MY_ID?'chat-me':'chat-other'}">${m.text}</div>`; }
+function showMsg(m){ const b=document.getElementById('chatBox'); if(document.getElementById(m.id)) return; b.innerHTML+=`<div id="${m.id}" style="padding:8px 12px;border-radius:16px;max-width:80%;margin-bottom:6px;background:${m.from==MY_ID?'#1877f2;color:#fff;margin-left:auto':'var(--border)'}">${m.text}</div>`; }
 async function sendChat(){ const to=+document.getElementById('chatTo').value||2, txt=document.getElementById('chatMsg').value; if(!txt) return; const m=await (await fetch(API+"/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:MY_ID,to,text:txt})})).json(); showMsg(m); document.getElementById('chatMsg').value=""; }
 function clickToMessenger(aid){ showTab('chat'); document.getElementById('chatTo').value=aid; document.getElementById('chatMsg').value="مرحبا، شفت إعلانكم في نور بوك 👋"; }
-setInterval(()=>fetch(API+"/heartbeat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:MY_ID})}),30000);
+let products=[{id:1,name:"ايفون 13 - نضيف",price:"450,000 ج",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400",seller:"أحمد - بورتسودان"},{id:2,name:"جلابية فاخرة",price:"25,000 ج",img:"https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400",seller:"سارة - ديم مدينة"}];
+function renderMarket(){ document.getElementById('marketGrid').innerHTML=products.map(p=>`<div class="card" style="padding:0;overflow:hidden"><img src="${p.img}" style="width:100%;height:130px;object-fit:cover"><div style="padding:10px"><b style="font-size:13px">${p.name}</b><p style="color:#16a34a;font-weight:900">${p.price}</p><p style="font-size:11px;color:var(--muted)">${p.seller}</p><button class="btn-blue" style="width:100%;margin-top:8px;font-size:12px" onclick="clickToMessenger(99)">💬 راسل البائع في نور شات</button></div></div>`).join(''); }
 loadFeed(); loadSuggest();
 </script></body></html>
